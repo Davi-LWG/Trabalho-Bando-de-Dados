@@ -22,16 +22,39 @@
                 <h1 class="titulo">Venda</h1>
             </div>
 
-            <hr>
+            <form action="/venda" method="post" class="formulario">
 
-            <form action="index.html" method="get" class="formulario">
-
+                <input type="number" name="cli-cpf" id="cli-cpf" placeholder="CPF do cliente" class="area info" required>
                 <input type="text" name="pCodigo" id="pCodigo" placeholder="Codigo do Produto" class="area info" required>
-                
                 <input type="number" name="quantidade" id="quantidade" placeholder="Quantidade" class="area info" required>
+                <input type="number" name="func-cpf" id="func-cpf" placeholder="CPF do funcionário" class="area info" required>
+
+                <label class="label">Método de Pagamento</label>
+
+                <div class="mtd-pag">
+                    <select name="mtd-pag" class="data-info" required>
+                        <option value="" disabled selected></option>
+                        <option value="Cartão">Cartão</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+
+                <label class="label">Parcelas</label>
+
+                <div class="parcelas">
+                    <select name="parcelas" class="data-info" required>
+                        <option value="" disabled selected></option>
+                        <option value="1x">1x</option>
+                        <option value="2x">2x</option>
+                        <option value="3x">3x</option>
+                        <option value="4x">4x</option>
+                        <option value="5x">5x</option>
+                    </select>
+                </div>
+
 
                 <div class="area-botao">
-                    <input type="submit" value="Adicionar no Carrinho" class="btn">
+                    <input type="submit" value="Fazer Login" class="btn">
                 </div>
             </form>
         </div>

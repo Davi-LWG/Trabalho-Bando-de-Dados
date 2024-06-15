@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="src/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/F_cadastro/fcReset.css">
+    <link rel="stylesheet" href="../css/F_cadastro/fcStyle.css">
+    <link rel="stylesheet" href="../css/F_cadastro/fcResponsive.css">
+    <title>Cadastro de Categoria</title>
+</head>
+
+<body>
+    <main class="container">
+        <div class="area-do-formulario">
+            <div class="introducao">
+                <h1 class="titulo">Cadastro de Categoria</h1>
+            </div>
+
+            <hr>
+
+            <form action="cadastro_categoria" method="post" class="formulario">
+
+                <input type="number" name="cod_ctg" id="cod_ctg" placeholder="Código da Categoria" class="area info" required>
+                <input type="text" name="nome" id="nome" placeholder="Nome da Categoria" class="area info" required>
+
+                <div class="area-botao">
+                    <input type="submit" value="Cadastrar Categoria" class="btn">
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

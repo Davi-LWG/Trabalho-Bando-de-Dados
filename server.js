@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
+let funcionarioTipo;
 
 // Middleware para analisar o corpo de requisições POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,7 @@ app.post('/login', (req, res) => {
     const validCodigo = '123';
     const validSenha = '123';
     const validCategoria = 'gerente';
+    funcionarioTipo = validCategoria;
 
     // Verificação das credenciais
     if ((codigo === validCodigo) && (senha === validSenha) && (categoria == validCategoria)) {
@@ -49,6 +51,31 @@ app.post('/login', (req, res) => {
             </html>
         `);
     }
+});
+
+app.post('/venda', (req, res) => {
+    const {pCodigo, quantidade} = req.body;
+
+    const custoProduto = 15;
+    let valorVenda = custoProduto*quantidade;
+
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Invalid Data</title>
+        </head>
+        <body>
+            <script>
+                alert("O valor da venda foi de R$ ${valorVenda}");
+                window.location.href = '/'; // Redirect back to the main page after the alert
+            </script>
+        </body>
+        </html>
+    `);
+
 });
 
 app.listen(port, () => {
