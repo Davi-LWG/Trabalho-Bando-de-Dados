@@ -1,12 +1,26 @@
 {
-  "name": "trabalho_final",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.10.1",
+    "sequelize": "^6.37.3",
+    "sequelize-cli": "^6.6.2",
+    "sql": "^0.78.0"
+  },
+  "name": "trabalho-bando-de-dados",
   "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "Davi",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-execute": "^0.2.2"
+  }
 }

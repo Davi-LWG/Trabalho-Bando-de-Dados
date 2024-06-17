@@ -1,10 +1,33 @@
 const express = require('express');
+const mysql = require('mysql2/promise')
 const path = require('path');
 const bodyParser = require('body-parser');
+
 
 const app = express();
 const port = 3000;
 let funcionarioTipo;
+
+const connection = mysql.createPool({
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: '',
+    database: 'TrabalhoFinal',
+});
+
+
+app.listen(port,()=>{
+    console.log('app running')
+});
+
+
+/*app.get('/',async (req,res)=>{
+    const {CPF_Cliente} = await connection.execute('SELECT * FROM cliente WHERE CPF_Cliente=\'111.222.333-44\'');
+    //const = await queryRow;
+    return res.status(201).json(CPF_Cliente);
+})*/
+
 
 // Middleware para analisar o corpo de requisições POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,14 +40,16 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/html/index.html'));
 });
 
+
 // Lidar com logins de usuáios
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { codigo, senha, categoria } = req.body;
 
     // Credenciais
-    const validCodigo = '123';
-    const validSenha = '123';
-    const validCategoria = 'gerente';
+    const [funcionario] = await connection.query(`SELECT * FROM funcionario WHERE CPF_Funcionario=\'${codigo}'`);
+    const validCodigo=(funcionario[0].CPF_Funcionario);
+    const validSenha = (funcionario[0].SENHA);
+    const validCategoria = 'colaborador';
     funcionarioTipo = validCategoria;
 
     // Verificação das credenciais
@@ -53,11 +78,22 @@ app.post('/login', (req, res) => {
     }
 });
 
-app.post('/venda', (req, res) => {
-    const {pCodigo, quantidade} = req.body;
+app.post('/pcadastro',(req,res)=>{
 
-    const custoProduto = 15;
+})
+
+app.post('/venda',async (req, res) => {
+    const {clienteCpf, pCodigo, quantidade, funcCpf} = req.body;
+    const [produto] = await connection.query(`SELECT * FROM Produto WHERE Cod_pedido=${pCodigo}`);
+    const [cliente] = await connection.query(`SELECT * FROM Cliente WHERE CPF_cliente=\'${clienteCpf}'`);
+    const [funcionario] = await connection.query(`SELECT * FROM Funcionario WHERE CPF_Funcionario=\'${funcCpf}'`);
+    const data = new Date();
+
+    const idLast = connection.query(`SELECT Cod_Pedido FROM Pedido ORDER BY Cod_Pedido DESC LIMIT 1`);
+
+    connection.execute(`INSERT INTO Pedido(Cod_Pedido, CPF_Cliente, Data_Pedido,Quantidade,CPF_Funcionario) VALUES(${cliente.CPF_Cliente},'${cliente.CPF_Cliente}','${data}',${quantidade},'${funcionario.CPF_Funcionario}'`);
     let valorVenda = custoProduto*quantidade;
+
 
     res.send(`
         <!DOCTYPE html>
@@ -69,7 +105,7 @@ app.post('/venda', (req, res) => {
         </head>
         <body>
             <script>
-                alert("O valor da venda foi de R$ ${valorVenda}");
+                alert("Produto comprado: \nQuantidade: \nO valor da venda foi de R$ ${valorVenda}");
                 window.location.href = '/'; // Redirect back to the main page after the alert
             </script>
         </body>
@@ -78,6 +114,3 @@ app.post('/venda', (req, res) => {
 
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}/`);
-});

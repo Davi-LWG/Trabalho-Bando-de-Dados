@@ -1,5 +1,6 @@
 body {
-    background: url(../../images/backgroundPlanetas.jpg) no-repeat;
+    background: url(../../images/equipamentos_esportivos.webp) no-repeat;
+    background-size: cover;
 }
 
 .container {
