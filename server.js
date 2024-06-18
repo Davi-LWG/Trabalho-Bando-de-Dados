@@ -40,6 +40,32 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/html/index.html'));
 });
 
+// tabela dinâmica funcionario
+app.get('/dinam_funcionario', async (req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute('SELECT * FROM funcionario');
+        await connection.end();
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// tabela dinâmica produtos
+app.get('/dinam_produtos', async (req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute('SELECT * FROM Produto');
+        await connection.end();
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 // Lidar com logins de usuáios
 app.post('/login', async (req, res) => {

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="src/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/Exibicao_dados/ExibReset.css">
+    <link rel="stylesheet" href="../css/Exibicao_dados/ExibStyle.css">
+    <link rel="stylesheet" href="../css/Exibicao_dados/ExibResponsive.css">
+    <title>Login</title>
+</head>
+<body>
+    <main class="container">
+        <div class="area-da-tabela">
+            <div class="introducao">
+                <h1 class="titulo">Resultados dos Funcionários</h1>
+            </div>
+
+            <table id="dynamicTable" class="tabela">
+                <thead>
+                    <tr>
+                        <th>CPF</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Endereco</th>
+                        <th>Salario</th>
+                        <th>Senha</th>
+                        <th>Categoria do Funcionário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- As linhas irão aparecer dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/dinam_funcionario');
+                const data = await response.json();
+
+                const tableBody = document.querySelector('#dynamicTable tbody');
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.CPF_Funcionario}</td>
+                        <td>${row.Nome}</td>
+                        <td>${row.Email}</td>
+                        <td>${row.Telefone}</td>
+                        <td>${row.Endereco}</td>
+                        <td>${row.Salario}</td>
+                        <td>${row.Senha}</td>
+                        <td>${row.Tipo_func}</td>
+                        <!-- Add more columns as needed -->
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    </script>
+</body>
+</html>
