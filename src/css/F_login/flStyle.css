@@ -7,7 +7,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 60vh;
 }
 
 .area-do-formulario {
@@ -29,6 +29,12 @@ body {
     padding: 1rem 1rem;
 }
 
+.introducao_logo {
+    text-align: center;
+    width: 100%;
+    padding: 1rem 1rem;
+}
+
 .introducao img {
     position: absolute;
     right: 1rem;
@@ -36,6 +42,16 @@ body {
 
 .area-do-formulario .titulo {
     font-size: 3.5rem;
+}
+
+.titulo_logo {
+    font-size: 11rem;
+    color:rgb(223, 228, 255);
+    /* padding-top: 10rem; */
+    background-color: rgb(104, 2, 2);
+    margin-inline: 50rem;
+    margin-top: 10rem;
+    border-radius: 5rem;
 }
 
 .area-do-formulario .texto {
