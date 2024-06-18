@@ -70,6 +70,43 @@ app.get('/dinam_produtos', async (req, res) => {
     }
 });
 
+// editar nome de um produto
+app.post('/edicao_nome', async (req, res) => {
+    const { pCodigo, nome } = req.body;
+    await connection.query(`ALTER Produto SET Nome_produto = ${nome} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar categoria de um produto
+app.post('/edicao_categoria', async (req, res) => {
+    const { pCodigo, categoria } = req.body;
+    await connection.query(`ALTER Produto SET Categoria = ${categoria} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar preco de um produto
+app.post('/edicao_preco', async (req, res) => {
+    const { pCodigo, preco } = req.body;
+    await connection.query(`ALTER Produto SET Preco = ${preco} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar promoção de um produto
+app.post('/edicao_promocao', async (req, res) => {
+    const { pCodigo, promocao } = req.body;
+    await connection.query(`ALTER Produto SET Promocao = ${promocao} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar fornecedor de um produto
+app.post('/edicao_fornecedor', async (req, res) => {
+    const { pCodigo, fornecedor } = req.body;
+    await connection.query(`ALTER Produto SET Cod_Fornecedor = ${fornecedor} where Cod_produto=${pCodigo}`);
+});
+
+
+
+
 
 // Lidar com logins de usuáios
 app.post('/login', async (req, res) => {

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="src/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/P_cadastro/pcReset.css">
+    <link rel="stylesheet" href="../css/P_cadastro/pcStyle.css">
+    <link rel="stylesheet" href="../css/P_cadastro/pcResponsive.css">
+    <title>Edição</title>
+</head>
+
+<body>
+    <main class="container">
+        <div class="area-do-formulario">
+            <div class="introducao">
+                <h1 class="titulo">Edição de promoção de um produto</h1>
+            </div>
+
+            <hr>
+
+            <form action="/edicao_promocao" method="post" class="formulario">
+
+                <input type="number" name="pCodigo" id="pCodigo" placeholder="Código do Produto" class="area info" required>
+                <input type="text" name="promocao" id="promocao" placeholder="Nova promoção" class="area info" required>
+
+                <div class="area-botao">
+                    <input type="submit" value="Alterar promoção" class="btn">
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>
