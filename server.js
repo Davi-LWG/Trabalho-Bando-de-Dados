@@ -40,6 +40,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/html/index.html'));
 });
 
+app.get('/listar_funcionarios', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/html/Exibicao_funcionarios.html'));
+});
+
 // tabela dinâmica funcionario
 app.get('/dinam_funcionario', async (req, res) => {
     try {
