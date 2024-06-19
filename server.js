@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql2/promise')
 const path = require('path');
 const bodyParser = require('body-parser');
+const { CONNREFUSED } = require('dns');
 
 
 const app = express();
@@ -40,29 +41,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/html/index.html'));
 });
 
-app.get('/listar_funcionarios', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/html/Exibicao_funcionarios.html'));
-});
-
-// tabela dinâmica funcionario
-app.get('/dinam_funcionario', async (req, res) => {
-    try {
-        const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT * FROM funcionario');
-        await connection.end();
-        res.json(rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-// tabela dinâmica produtos
+//Tabela de produtos
 app.get('/dinam_produtos', async (req, res) => {
     try {
-        const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT * FROM Produto');
-        await connection.end();
+        const [rows] = await connection.query('SELECT * FROM Produto');
         res.json(rows);
     } catch (error) {
         console.error(error);
@@ -70,54 +52,29 @@ app.get('/dinam_produtos', async (req, res) => {
     }
 });
 
-// editar nome de um produto
-app.post('/edicao_nome', async (req, res) => {
-    const { pCodigo, nome } = req.body;
-    await connection.query(`ALTER Produto SET Nome_produto = ${nome} where Cod_produto=${pCodigo}`);
+//Tabela de produtos
+app.get('/dinam_vendas', async (req, res) => {
+    try {
+        const [rows] = await connection.query('SELECT * FROM Pedidos');
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 });
-
-
-// editar categoria de um produto
-app.post('/edicao_categoria', async (req, res) => {
-    const { pCodigo, categoria } = req.body;
-    await connection.query(`ALTER Produto SET Categoria = ${categoria} where Cod_produto=${pCodigo}`);
-});
-
-
-// editar preco de um produto
-app.post('/edicao_preco', async (req, res) => {
-    const { pCodigo, preco } = req.body;
-    await connection.query(`ALTER Produto SET Preco = ${preco} where Cod_produto=${pCodigo}`);
-});
-
-
-// editar promoção de um produto
-app.post('/edicao_promocao', async (req, res) => {
-    const { pCodigo, promocao } = req.body;
-    await connection.query(`ALTER Produto SET Promocao = ${promocao} where Cod_produto=${pCodigo}`);
-});
-
-
-// editar fornecedor de um produto
-app.post('/edicao_fornecedor', async (req, res) => {
-    const { pCodigo, fornecedor } = req.body;
-    await connection.query(`ALTER Produto SET Cod_Fornecedor = ${fornecedor} where Cod_produto=${pCodigo}`);
-});
-
-
-
-
 
 // Lidar com logins de usuáios
 app.post('/login', async (req, res) => {
     const { codigo, senha, categoria } = req.body;
 
+    try{
     // Credenciais
     const [funcionario] = await connection.query(`SELECT * FROM funcionario WHERE CPF_Funcionario=\'${codigo}'`);
     const validCodigo=(funcionario[0].CPF_Funcionario);
     const validSenha = (funcionario[0].SENHA);
     const validCategoria = 'colaborador';
     funcionarioTipo = validCategoria;
+    
 
     // Verificação das credenciais
     if ((codigo === validCodigo) && (senha === validSenha) && (categoria == validCategoria)) {
@@ -143,25 +100,7 @@ app.post('/login', async (req, res) => {
             </html>
         `);
     }
-});
-
-app.post('/pcadastro',(req,res)=>{
-
-})
-
-app.post('/venda',async (req, res) => {
-    const {clienteCpf, pCodigo, quantidade, funcCpf} = req.body;
-    const [produto] = await connection.query(`SELECT * FROM Produto WHERE Cod_pedido=${pCodigo}`);
-    const [cliente] = await connection.query(`SELECT * FROM Cliente WHERE CPF_cliente=\'${clienteCpf}'`);
-    const [funcionario] = await connection.query(`SELECT * FROM Funcionario WHERE CPF_Funcionario=\'${funcCpf}'`);
-    const data = new Date();
-
-    const idLast = connection.query(`SELECT Cod_Pedido FROM Pedido ORDER BY Cod_Pedido DESC LIMIT 1`);
-
-    connection.execute(`INSERT INTO Pedido(Cod_Pedido, CPF_Cliente, Data_Pedido,Quantidade,CPF_Funcionario) VALUES(${cliente.CPF_Cliente},'${cliente.CPF_Cliente}','${data}',${quantidade},'${funcionario.CPF_Funcionario}'`);
-    let valorVenda = custoProduto*quantidade;
-
-
+}catch(error){
     res.send(`
         <!DOCTYPE html>
         <html lang="en">
@@ -172,12 +111,105 @@ app.post('/venda',async (req, res) => {
         </head>
         <body>
             <script>
-                alert("Produto comprado: \nQuantidade: \nO valor da venda foi de R$ ${valorVenda}");
+                alert('Dados inválidos. Por favor, tente novamente.');
                 window.location.href = '/'; // Redirect back to the main page after the alert
             </script>
         </body>
         </html>
     `);
-
+}
 });
 
+app.post('/pcadastro',(req,res)=>{
+
+})
+
+//lidar com vendas
+app.post('/venda',async (req, res) => {
+    const {clienteCpf, pCodigo, quantidade, funcCpf} = req.body;
+    try{
+    const [produto] = await connection.query(`SELECT * FROM Produto WHERE Cod_produto=${pCodigo}`);
+    const [cliente] = await connection.query(`SELECT * FROM Cliente WHERE CPF_cliente=\'${clienteCpf}'`);
+    const [funcionario] = await connection.query(`SELECT * FROM Funcionario WHERE CPF_Funcionario=\'${funcCpf}'`);
+    const data = new Date();
+    const dataISO = data.toISOString().split('T')[0];
+    console.log(data);
+
+    connection.execute(`INSERT INTO Pedido(CPF_Cliente, Data_Pedido, Quantidade, CPF_Funcionario) VALUES('${cliente[0].CPF_Cliente}','${dataISO}',${quantidade},'${funcionario[0].CPF_Funcionario}')`);
+    const [codUltimoPedido] = await connection.query(`SELECT MAX(Cod_Pedido) AS Cod_Pedido FROM pedido`);
+    connection.execute(`INSERT INTO itens_pedido(Cod_Pedido,Cod_produto,quantidade) VALUES('${codUltimoPedido[0].Cod_Pedido}',${pCodigo}, ${quantidade})`);
+    res.send(
+        `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Venda efetuada</title>
+            </head>
+            <body>
+                <script>
+                    alert('Venda realizada com sucesso');
+                    window.location.href = '/html/P_venda.html'; // Redirect back to the main page after the alert
+                </script>
+            </body>
+            </html>
+        `
+    );
+    
+    }catch(err){
+        res.send(
+            `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Erro na venda</title>
+            </head>
+            <body>
+                <script>
+                    alert('Venda não realizada');
+                    window.location.href = '/html/P_venda.html'; // Redirect back to the main page after the alert
+                </script>
+            </body>
+            </html>
+        `
+        );
+        
+    }
+});
+
+// editar nome de um produto
+app.post('/edicao_nome', async (req, res) => {
+    const { pCodigo, nome } = req.body;
+    await connection.query(`UPDATE produto SET Nome_produto = '${nome}' where Cod_produto=${pCodigo}`);
+});
+
+
+// editar categoria de um produto
+app.post('/edicao_categoria', async (req, res) => {
+    const { pCodigo, categoria } = req.body;
+    await connection.query(`UPDATE produto SET Categoria = '${categoria}' where Cod_produto=${pCodigo}`);
+});
+
+
+// editar preco de um produto
+app.post('/edicao_preco', async (req, res) => {
+    const { pCodigo, preco } = req.body;
+    await connection.query(`UPDATE produto SET Preco = ${preco} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar promoção de um produto
+app.post('/edicao_promocao', async (req, res) => {
+    const { pCodigo, promocao } = req.body;
+    await connection.query(`UPDATE produto SET Promocao = ${promocao} where Cod_produto=${pCodigo}`);
+});
+
+
+// editar fornecedor de um produto
+app.post('/edicao_fornecedor', async (req, res) => {
+    const { pCodigo, fornecedor } = req.body;
+    await connection.query(`UPDATER Produto SET Cod_Fornecedor = ${fornecedor} where Cod_produto=${pCodigo}`);
+});

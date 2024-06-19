@@ -87,6 +87,15 @@ body {
     padding-top: 2rem;
 }
 
+table th{
+    text-align: center;
+    border: 1px solid black;
+}
+table td{
+    text-align: center;
+    padding: 5px;
+}
+
 .area-botao .btn {
     cursor: pointer;
     font-size: 1.8rem;
